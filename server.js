@@ -5,6 +5,10 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.get("/", (req, res) => {
+  res.send("שלום! השרת עובד. עבור ל-endpoint /services כדי לראות את רשימת השירותים שלך.");
+});
+
 // Endpoint שמחזיר את רשימת השירותים ב-Render
 app.get("/services", async (req, res) => {
   try {
