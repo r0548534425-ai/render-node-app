@@ -5,12 +5,15 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// -------- Items Handler --------
+// ---------- Items ----------
 const itemsHandler = (req, res) => {
   res.send("Items endpoint עובד בהצלחה!");
 };
 
-// -------- Services endpoint --------
+// /items או /items/
+app.get(/^\/items\/?$/, itemsHandler);
+
+// ----------- Services -----------
 app.get("/services", async (req, res) => {
   try {
     const response = await axios.get("https://api.render.com/v1/services", {
@@ -26,13 +29,8 @@ app.get("/services", async (req, res) => {
   }
 });
 
-// -------- Redirect everything except /services to /items --------
-
-// /items רגיל
-app.get("/items", itemsHandler);
-
-// כל דבר שלא /services → שלחי ל-items
-app.get("*", (req, res) => {
+// ---------- Catch-all ----------
+app.get(/.*/, (req, res) => {
   res.redirect("/items");
 });
 
