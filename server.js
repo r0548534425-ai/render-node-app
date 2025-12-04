@@ -20,16 +20,19 @@ const getServices = async () => {
   }
 };
 
-// Endpoint /services
-app.get("/services", async (req, res) => {
+// "/" ו־"/services" מציגים את אותה רשימה
+const servicesHandler = async (req, res) => {
   const services = await getServices();
   res.json(services);
-});
+};
 
-// כל נתיב אחר כולל / → מראה את רשימת השירותים
-app.get("*", async (req, res) => {
-  const services = await getServices();
-  res.json(services);
+app.get("/", servicesHandler);
+app.get("/services", servicesHandler);
+
+// כאן אפשר לשים נתיבים אחרים שלא ישפיעו
+// לדוגמה:
+app.get("/about", (req, res) => {
+  res.send("דף אודות רגיל");
 });
 
 app.listen(PORT, () => {
