@@ -9,7 +9,22 @@ app.get("/", (req, res) => {
   res.send("שלום! השרת עובד. עבור ל-endpoint /services כדי לראות את רשימת השירותים שלך.");
 });
 
-// Endpoint שמחזיר את רשימת השירותים ב-Render
+// -------- Items Handling --------
+
+// פונקציה מרכזית – כל סוג של /items יגיע אליה
+const itemsHandler = (req, res) => {
+  res.send("Items endpoint עובד בהצלחה!");
+};
+
+// /items בדיוק
+app.get("/items", itemsHandler);
+
+// כל וריאציה כמו /items/ או /items/משהו → נעשה redirect ל־/items
+app.get("/items*", (req, res) => {
+  res.redirect("/items");
+});
+
+// -------- Render Services --------
 app.get("/services", async (req, res) => {
   try {
     const response = await axios.get("https://api.render.com/v1/services", {
