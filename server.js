@@ -5,36 +5,31 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// במקום להציג טקסט — שולח ל-items
-app.get("/", (req, res) => {
-  res.redirect("/items");
-});
-
-// כאן את שמה מה שאת רוצה ש-/items יעשה
-app.get("/items", async (req, res) => {
-  try {
-    const response = await axios.get("https://todolistserver-g9dd.onrender.com/items");
-    res.json(response.data);
-  } catch (err) {
-    console.error(err.response?.data || err);
-    res.status(500).json({ error: "Failed to fetch items" });
-  }
-});
-
-// Endpoint שמחזיר את רשימת השירותים ב-Render
-app.get("/services", async (req, res) => {
+// פונקציה שמביאה את רשימת השירותים מ-Render
+const getServices = async () => {
   try {
     const response = await axios.get("https://api.render.com/v1/services", {
       headers: {
         Authorization: `Bearer ${process.env.RENDER_API_KEY}`
       }
     });
-
-    res.json(response.data);
+    return response.data;
   } catch (err) {
     console.error(err.response?.data || err);
-    res.status(500).json({ error: "Failed to fetch data from Render API" });
+    return { error: "Failed to fetch data from Render API" };
   }
+};
+
+// Endpoint /services
+app.get("/services", async (req, res) => {
+  const services = await getServices();
+  res.json(services);
+});
+
+// כל נתיב אחר כולל / → מראה את רשימת השירותים
+app.get("*", async (req, res) => {
+  const services = await getServices();
+  res.json(services);
 });
 
 app.listen(PORT, () => {
